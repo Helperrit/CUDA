@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <cuda.h>
 
+// Kernel function
 __global__ void printWelcomeMessage(int N) {
     int idx = threadIdx.x + blockIdx.x * blockDim.x; // Global thread index
 
@@ -10,23 +11,16 @@ __global__ void printWelcomeMessage(int N) {
 }
 
 int main() {
-    int N; // Number of times to print the message
-    int threadsPerBlock, blocksPerGrid;
-
-    // Input from user
-    printf("Enter the number of messages (N): ");
-    scanf("%d", &N);
-
-    printf("Enter the number of threads per block: ");
-    scanf("%d", &threadsPerBlock);
+    int N = 10;               // Number of times to print the message
+    int threadsPerBlock = 4;  // Number of threads per block
 
     // Calculate the number of blocks needed
-    blocksPerGrid = (N + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = (N + threadsPerBlock - 1) / threadsPerBlock;
 
     // Launch the kernel
     printWelcomeMessage<<<blocksPerGrid, threadsPerBlock>>>(N);
 
-    // Synchronize and finish
+    // Synchronize to ensure kernel execution completes
     cudaDeviceSynchronize();
 
     return 0;
